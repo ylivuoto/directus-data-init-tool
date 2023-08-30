@@ -10,3 +10,8 @@ export default function retrieveBackup() {
 	return;
     }
 }
+
+export const retrieveConfig = (collection: string) => {
+    const f = fs.readFileSync(`./backups/${collection}.json`, 'utf8');
+    return JSON.parse(f);
+}

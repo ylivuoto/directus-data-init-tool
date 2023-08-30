@@ -1,5 +1,5 @@
 import { createDirectus, authentication, rest, schemaApply, schemaDiff, readMe} from '@directus/sdk';
-import retrieveBackup from './retrieve.js';
+import retrieveBackup, { retrieveConfig } from './retrieve.js';
 
 export class DClient {
     private token: string | undefined = '';
@@ -40,6 +40,7 @@ export class DClient {
 	}
 
 	const diff = await this.client.request(schemaDiff(schema))
+	    .catch((error) => console.log('Diff error: ', error));
 
 	if(!diff) {
 	    console.log('Schema diff empty.')
@@ -47,6 +48,13 @@ export class DClient {
 	}
 	
 	await this.client.request(schemaApply(diff))
-	    .catch((error) => console.log(error));
+	    .catch((error) => console.log('Schema error: ', error));
+
+	const collections = ['presets'];
+	    //const collections = ['operations', 'panels', 'presets', 'permissions', 'roles', 'settings', 'translations', 'users', 'flows', 'files', 'folders', ]
+	for(const collection in collections){
+	    const config = retrieveConfig(collection);
+	    console.log(config);
+	}
     }
 }
