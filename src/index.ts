@@ -1,6 +1,7 @@
 import inquirer from 'inquirer';
 import { DClient } from './lib/directus.js';
 import { questions, initials } from './lib/constants.js';
+import { exec } from 'node:child_process'
 
 const client = new DClient();
 
@@ -23,6 +24,7 @@ const inits = inquirer
     .prompt(initials)
     .then(async (answers: any) => {
 	console.log(answers)
+	exec(`printf "test" | docker secret create test_scrt -`)
     })
     .catch((error: any) => {
 	if (error.isTtyError) {
