@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import { DClient } from './lib/directus.js';
-import { questions } from './lib/constants.js';
+import { questions, initials } from './lib/constants.js';
 
 const client = new DClient();
 
@@ -19,6 +19,23 @@ interface IPrompts {
 }
 
 
+const inits = inquirer
+    .prompt(initials)
+    .then(async (answers: any) => {
+	console.log(answers)
+    })
+    .catch((error: any) => {
+	if (error.isTtyError) {
+	    console.log('TTY err');
+	    // Prompt couldn't be rendered in the current environment
+	} else {
+	    // Something else went wrong
+	    console.log('Prompter error.')
+	    console.log(error);
+	}
+    });
+
+inits.then(() =>{
 inquirer
     .prompt(questions)
     .then(async (answers: IPrompts) => {
@@ -36,3 +53,4 @@ inquirer
 	    console.log(error);
 	}
     });
+});

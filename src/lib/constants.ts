@@ -1,6 +1,38 @@
 import { DClient } from './directus.js';
 const client = new DClient();
 
+export const initials = [
+    {
+	type: 'checkbox',
+	name: 'collections',
+	default: [
+	    'operations',
+	    'panels',
+	    'presets',
+	    'permissions',
+	    'roles',
+	    'settings',
+	    'translations',
+	    'users',
+	    'flows',
+	],
+	message: "What collections needs to be included",
+	choices: [
+	    'operations',
+	    'panels',
+	    'presets',
+	    'permissions',
+	    'roles',
+	    'settings',
+	    'translations',
+	    'users',
+	    'flows',
+	    'files',
+	    'folders'
+	]
+    },
+]
+
 export const questions = [
     {
 	type: 'input',
