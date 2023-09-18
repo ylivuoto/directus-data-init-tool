@@ -31,6 +31,36 @@ export const initials = [
 	    'folders'
 	]
     },
+    {
+	type: 'input',
+	name: 'admin_email',
+	default: 'admin@example.com',
+	message: "Pleas give an admin email:",
+    },
+    {
+	type: 'password',
+	mask: '.',
+	name: 'admin_password',
+	message: "Pleas give an admin password:",
+    },
+    {
+	type: 'input',
+	name: 'postgres_db',
+	default: 'directus',
+	message: "Pleas give a name for database:",
+    },
+    {
+	type: 'input',
+	name: 'postgres_user',
+	default: 'directus',
+	message: "And a database username:",
+    },
+        {
+	type: 'password',
+	mask: '.',
+	name: 'postgres_password',
+	message: "And a password:",
+    },
 ]
 
 export const questions = [

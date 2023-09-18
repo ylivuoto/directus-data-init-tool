@@ -3,6 +3,8 @@ import { DClient } from './lib/directus.js';
 import { questions, initials } from './lib/constants.js';
 import { exec } from 'node:child_process'
 
+import { v4 as uuidv4 } from 'uuid';
+
 const client = new DClient();
 
 //import {cwd} from 'node:process';
@@ -19,12 +21,34 @@ interface IPrompts {
     token: string;
 }
 
+const key = uuidv4();
+const secret = uuidv4();
+
 
 const inits = inquirer
     .prompt(initials)
     .then(async (answers: any) => {
 	console.log(answers)
-	exec(`printf "test" | docker secret create test_scrt -`)
+	exec(`printf ${answers.admin_email} | docker secret create admin_email -`);
+	console.log('Admin email wrote.');
+	exec(`printf ${answers.admin_password} | docker secret create admin_password -`);
+	console.log('Admin password wrote.');
+	exec(`printf ${answers.postgres_db} | docker secret create postgres_db -`);
+	console.log('PostgreSQL database name wrote.');
+	exec(`printf ${answers.postgres_user} | docker secret create postgres_user -`);
+	console.log('PostgreSQL username wrote.');
+	exec(`printf ${answers.postgres_password} | docker secret create postgres_password -`);
+	console.log('PostgreSQL user password wrote.');
+	exec(`printf ${key} | docker secret create project_key -`);
+	console.log('Key for directus wrote.');
+	exec(`printf ${secret} | docker secret create project_secret -`);
+	console.log('Secret for directus wrote.');
+	console.log('\n');
+
+	console.log('Starting up the directus related containers...')
+	exec('docker stack deploy --compose-file docker-compose-bak3.yml directus_cms', {
+	    cwd: 'C:/Users/O-P/ylivuoto/directus-on-docker'
+	});
     })
     .catch((error: any) => {
 	if (error.isTtyError) {
