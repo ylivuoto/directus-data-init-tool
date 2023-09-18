@@ -24,6 +24,7 @@ interface IPrompts {
 const key = uuidv4();
 const secret = uuidv4();
 let directusDir = '~/';
+let composeFile = 'docker-compose.yml';
 
 // Prompt some initial values like secrets, collections etc.
 const inits = inquirer
@@ -62,8 +63,8 @@ const inits = inquirer
 // Invoke the docker command after initial setup is done
 inits.then(() => {
     console.log('Starting up the directus related containers...')
-    exec('docker stack deploy --compose-file docker-compose-bak3.yml directus_cms', {
-	cwd: 'C:/Users/O-P/ylivuoto/directus-on-docker'
+    exec(`docker stack deploy --compose-file ${composeFile} directus_cms`, {
+	cwd: directusDir
     });
 })
 
