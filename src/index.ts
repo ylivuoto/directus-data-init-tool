@@ -63,10 +63,8 @@ const inits = inquirer
 // Invoke the docker command after initial setup is done
 inits.then(() => {
     console.log('Starting up the directus related containers...')
-    exec(`docker stack deploy --compose-file ${composeFile} directus_cms`, {
-	cwd: directusDir
-    });
-})
+    exec(`docker stack deploy --compose-file ${directusDir}/${composeFile} directus_cms`);
+});
 
 // And similarly prompt further questions after init is done
 inits.then(() =>{
