@@ -23,6 +23,7 @@ interface IPrompts {
 
 const key = uuidv4();
 const secret = uuidv4();
+let directusDir = '~/';
 
 // Prompt some initial values like secrets, collections etc.
 const inits = inquirer
@@ -44,6 +45,8 @@ const inits = inquirer
 	exec(`printf ${secret} | docker secret create project_secret -`);
 	console.log('Secret for directus wrote.');
 	console.log('\n');
+
+	directusDir = answers.directus_dir;
     })
     .catch((error: any) => {
 	if (error.isTtyError) {

@@ -33,21 +33,27 @@ export const initials = [
     },
     {
 	type: 'input',
+	name: 'directus_dir',
+	default: '~/directus-on-docker',
+	message: "Please give a directus root-folder:",
+    },
+    {
+	type: 'input',
 	name: 'admin_email',
 	default: 'admin@example.com',
-	message: "Pleas give an admin email:",
+	message: "Please give an admin email:",
     },
     {
 	type: 'password',
 	mask: '.',
 	name: 'admin_password',
-	message: "Pleas give an admin password:",
+	message: "Please give an admin password:",
     },
     {
 	type: 'input',
 	name: 'postgres_db',
 	default: 'directus',
-	message: "Pleas give a name for database:",
+	message: "Please give a name for database:",
     },
     {
 	type: 'input',
