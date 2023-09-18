@@ -24,7 +24,7 @@ interface IPrompts {
 const key = uuidv4();
 const secret = uuidv4();
 
-
+// Prompt some initial values like secrets, collections etc.
 const inits = inquirer
     .prompt(initials)
     .then(async (answers: any) => {
@@ -44,11 +44,6 @@ const inits = inquirer
 	exec(`printf ${secret} | docker secret create project_secret -`);
 	console.log('Secret for directus wrote.');
 	console.log('\n');
-
-	console.log('Starting up the directus related containers...')
-	exec('docker stack deploy --compose-file docker-compose-bak3.yml directus_cms', {
-	    cwd: 'C:/Users/O-P/ylivuoto/directus-on-docker'
-	});
     })
     .catch((error: any) => {
 	if (error.isTtyError) {
@@ -61,6 +56,15 @@ const inits = inquirer
 	}
     });
 
+// Invoke the docker command after initial setup is done
+inits.then(() => {
+    console.log('Starting up the directus related containers...')
+    exec('docker stack deploy --compose-file docker-compose-bak3.yml directus_cms', {
+	cwd: 'C:/Users/O-P/ylivuoto/directus-on-docker'
+    });
+})
+
+// And similarly prompt further questions after init is done
 inits.then(() =>{
 inquirer
     .prompt(questions)
