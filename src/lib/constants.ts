@@ -1,36 +1,7 @@
-import { DClient } from './directus.js';
+import { DClient } from './DClient.1.js';
 const client = new DClient();
 
 export const initials = [
-    {
-	type: 'checkbox',
-	name: 'collections',
-	default: [
-	    'operations',
-	    'panels',
-	    'presets',
-	    'permissions',
-	    'roles',
-	    'settings',
-	    'translations',
-	    'users',
-	    'flows',
-	],
-	message: "What collections needs to be included",
-	choices: [
-	    'operations',
-	    'panels',
-	    'presets',
-	    'permissions',
-	    'roles',
-	    'settings',
-	    'translations',
-	    'users',
-	    'flows',
-	    'files',
-	    'folders'
-	]
-    },
     {
 	type: 'input',
 	name: 'directus_dir',
@@ -70,6 +41,37 @@ export const initials = [
 ]
 
 export const questions = [
+    {
+	type: 'checkbox',
+	name: 'collections',
+	default: [
+	    'operations',
+	    'panels',
+	    'presets',
+	    'permissions',
+	    'roles',
+	    'settings',
+	    'translations',
+	    'users',
+	    'flows',
+	    //'relations'
+	],
+	message: "What collections needs to be included",
+	choices: [
+	    'operations',
+	    'panels',
+	    'presets',
+	    'permissions',
+	    'roles',
+	    'settings',
+	    'translations',
+	    'users',
+	    'flows',
+	   // 'relations',
+	    'files',
+	    'folders'
+	]
+    },
     {
 	type: 'input',
 	name: 'url',

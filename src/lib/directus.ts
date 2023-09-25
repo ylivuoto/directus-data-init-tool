@@ -4,6 +4,7 @@ import retrieveBackup, { retrieveConfig } from './retrieve.js';
 export class DClient {
     private token: string | undefined = '';
     private url: string | undefined = '';
+    private collections: Array<string> = [];
     // TODO: Client does not apply URL changes after declaration
     private client =  createDirectus<any>('http://localhost:8055').with(authentication()).with(rest());
     
@@ -24,6 +25,10 @@ export class DClient {
 	this.client.url = new URL(this.url);
     }
 
+    public updateCollections(collections: Array<string>){
+	this.collections = collections;
+    }
+
     public async check(value: string): Promise<boolean> {
 	this.updateToken(value);
 	return await this.client.request(readMe())
@@ -39,20 +44,21 @@ export class DClient {
 	    return;
 	}
 
-	const diff = await this.client.request(schemaDiff(schema))
+	await this.client.request(schemaDiff(schema, true))
+	    .then(async (res) => {
+		if (!res) {
+		    console.log('Schema diff empty.')
+		    return;
+		}
+
+		await this.client.request(schemaApply(res))
+		    .catch((error) => console.log('Schema error: ', error));
+
+	    })
 	    .catch((error) => console.log('Diff error: ', error));
 
-	if(!diff) {
-	    console.log('Schema diff empty.')
-	    return;
-	}
-	
-	await this.client.request(schemaApply(diff))
-	    .catch((error) => console.log('Schema error: ', error));
 
-	const collections = ['presets'];
-	    //const collections = ['operations', 'panels', 'presets', 'permissions', 'roles', 'settings', 'translations', 'users', 'flows', 'files', 'folders', ]
-	for(const collection in collections){
+	for(const collection of this.collections){
 	    const config = retrieveConfig(collection);
 	    console.log(config);
 	}

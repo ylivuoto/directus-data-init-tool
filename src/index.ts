@@ -19,6 +19,7 @@ console.log(description);
 interface IPrompts {
     url: string;
     token: string;
+    collections: Array<string>;
 }
 
 const key = uuidv4();
@@ -71,8 +72,10 @@ inits.then(() =>{
 inquirer
     .prompt(questions)
     .then(async (answers: IPrompts) => {
+	console.log(answers)
 	client.updateURL(answers.url);
 	client.updateToken(answers.token);
+	client.updateCollections(answers.collections)
 	await client.load();
     })
     .catch((error: any) => {
