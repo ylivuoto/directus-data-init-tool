@@ -55,7 +55,7 @@ export const questions = [
 	    'presets',
 	    'settings',
 	    'translations',
-	    //'relations'
+	    'relations'
 	],
 	message: "What collections needs to be included",
 	choices: [
@@ -69,7 +69,7 @@ export const questions = [
 	    'presets',
 	    'settings',
 	    'translations',
-	   // 'relations',
+	    'relations',
 	    'files',
 	    'folders'
 	]

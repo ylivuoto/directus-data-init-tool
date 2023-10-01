@@ -18,7 +18,7 @@ interface IPrompts {
 
 const key = uuidv4();
 const secret = uuidv4();
-let directusDir = '~/';
+let directusDir = '~/ylivuoto/directus-on-docker';
 let composeFile = 'docker-compose.yml';
 
 // Prompt some initial values like secrets, collections etc.

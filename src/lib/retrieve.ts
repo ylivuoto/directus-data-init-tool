@@ -24,6 +24,8 @@ export const retrieveConfig = (dir: string, collection: string) => {
 	delete item.users;
 
 	if(item.user) item.user = null;
+	if(item.resolve) item.resolve = null;
+	if(item.reject) item.reject = null;
     }
 
     return items;
