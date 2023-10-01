@@ -1,4 +1,4 @@
-import { DClient } from './DClient.1.js';
+import { DClient } from './directus.js';
 const client = new DClient();
 
 export const initials = [
@@ -45,28 +45,30 @@ export const questions = [
 	type: 'checkbox',
 	name: 'collections',
 	default: [
-	    'operations',
-	    'panels',
-	    'presets',
-	    'permissions',
 	    'roles',
+	    'users',
+	    'permissions',
+	    'dashboards',
+	    'panels',
+	    'flows',
+	    'operations',
+	    'presets',
 	    'settings',
 	    'translations',
-	    'users',
-	    'flows',
 	    //'relations'
 	],
 	message: "What collections needs to be included",
 	choices: [
-	    'operations',
-	    'panels',
-	    'presets',
-	    'permissions',
 	    'roles',
+	    'users',
+	    'permissions',
+	    'dashboards',
+	    'panels',
+	    'flows',
+	    'operations',
+	    'presets',
 	    'settings',
 	    'translations',
-	    'users',
-	    'flows',
 	   // 'relations',
 	    'files',
 	    'folders'
@@ -92,13 +94,12 @@ export const questions = [
 	message: "What's the Admin Token?",
 	async validate(value: string) {
 	    const valid = await client.check(value).then((res: any) => {
-		console.log(res)
-	    if (res) {
-		client.updateToken(value);
-		return true;
-	    }
+		if (res) {
+		    client.updateToken(value);
+		    return true;
+		}
 
-	    return 'Please enter a valid token.';
+		return 'Please enter a valid token.';
 	    });
 
 	    return valid;

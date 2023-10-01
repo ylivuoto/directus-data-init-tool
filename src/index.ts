@@ -7,12 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const client = new DClient();
 
-//import {cwd} from 'node:process';
-//import fs from 'node:fs';
-//import path from 'node:path';
-
-
-
 const description = 'Apply a template to a blank Directus instance.'
 console.log(description);
 
@@ -31,7 +25,6 @@ let composeFile = 'docker-compose.yml';
 const inits = inquirer
     .prompt(initials)
     .then(async (answers: any) => {
-	console.log(answers)
 	exec(`printf ${answers.admin_email} | docker secret create admin_email -`);
 	console.log('Admin email wrote.');
 	exec(`printf ${answers.admin_password} | docker secret create admin_password -`);

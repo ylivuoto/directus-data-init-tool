@@ -11,7 +11,20 @@ export default function retrieveBackup() {
     }
 }
 
-export const retrieveConfig = (collection: string) => {
-    const f = fs.readFileSync(`./backups/${collection}.json`, 'utf8');
-    return JSON.parse(f);
+export const retrieveConfig = (dir: string, collection: string) => {
+    const f = fs.readFileSync(`${dir}/${collection}.json`, 'utf8');
+    let items = JSON.parse(f);
+
+    if(!Array.isArray(items)) return items;
+    
+    for(let item of items){
+	delete item.translations;
+	delete item.panels;
+	delete item.operations
+	delete item.users;
+
+	if(item.user) item.user = null;
+    }
+
+    return items;
 }

@@ -1,4 +1,4 @@
-import { createDirectus, authentication, rest, schemaApply, schemaDiff, readMe} from '@directus/sdk';
+import { createDirectus, authentication, rest, schemaApply, schemaDiff, readMe, createRoles, createUsers, createOperations, createPanels, createPresets, createPermissions, updateSettings, createTranslations, createFlows, createFolders, uploadFiles, createPreset, createDashboards, /* readRoles, readUsers, readPermissions, readOperations, readPanels, readPresets, readTranslations, readFlows, readFolders */ } from '@directus/sdk';
 import retrieveBackup, { retrieveConfig } from './retrieve.js';
 
 export class DClient {
@@ -44,23 +44,55 @@ export class DClient {
 	    return;
 	}
 
-	await this.client.request(schemaDiff(schema, true))
-	    .then(async (res) => {
-		if (!res) {
-		    console.log('Schema diff empty.')
-		    return;
-		}
-
-		await this.client.request(schemaApply(res))
-		    .catch((error) => console.log('Schema error: ', error));
-
-	    })
+	const getDiff = this.client.request(schemaDiff(schema, true))
 	    .catch((error) => console.log('Diff error: ', error));
 
+	const apply = getDiff.then(async (diff: any) => {
+	    console.log(diff);
+		if (!diff) {
+		    console.log('Schema diff empty.')
+		}
 
-	for(const collection of this.collections){
-	    const config = retrieveConfig(collection);
-	    console.log(config);
-	}
+		return this.client.request(schemaApply(diff))
+		    .catch((error) => console.log('Schema error: ', error));
+
+	}).catch(() => console.log('Error when apply!'));
+
+	const writeMapping: any = {
+	    'roles': createRoles,
+	    'users': createUsers,
+	    'permissions': createPermissions,
+	    'dashboards': createDashboards,
+	    'operations': createOperations,
+	    'panels': createPanels,
+	    'presets': createPresets,
+	    'settings': updateSettings,
+	    'translations': createTranslations,
+	    'flows': createFlows,
+//	    'relations':
+	    'files': uploadFiles,
+	    'folders': createFolders
+	};
+	
+	apply.then( async () => {
+	    for await (const collection of this.collections){
+		if(collection == 'presets') continue;
+		const write = writeMapping[collection];
+
+		if(!write){
+		    console.error(`There is no function for ${collection}`);
+		    continue;
+		}
+
+		const config = retrieveConfig('./backups', collection);
+		this.client.request(write(config)).catch((error) => console.log(`In ${collection}`, error));
+	    }
+	    
+	    const presets = retrieveConfig('./backups', 'presets');
+	
+	    for await(const preset of presets){
+		this.client.request(createPreset(preset)).catch((error) => console.log(`With presets in ${preset.id}`, error));
+	    }
+	}).catch((error) => console.log('Error with system collections: ', error));
     }
 }
