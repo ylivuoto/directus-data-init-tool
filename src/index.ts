@@ -42,6 +42,7 @@ const inits = inquirer
 	console.log('\n');
 
 	directusDir = answers.directus_dir;
+	return;
     })
     .catch((error: any) => {
 	if (error.isTtyError) {

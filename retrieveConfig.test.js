@@ -95,6 +95,44 @@ const presets = [
 // ]
 
 
+const flows = [
+    {
+        "id": "0f8ea882-219d-4823-bb80-bc725d280c3a"
+    },
+    {
+        "id": "0f8ea882-219d-4823-bb80-bc725d280c3a"
+    },
+    {
+        "id": "0f8ea882-219d-4823-bb80-bc725d280c3a"
+    }
+];
+
+
+// in flows.json
+// [
+//     {
+//         "id": "0f8ea882-219d-4823-bb80-bc725d280c3a",
+//         "operations": [
+//             "da0bd4ed-f886-4bcb-9a61-f0cb3f7952bd"
+//         ]
+//     },
+//     {
+//         "id": "0f8ea882-219d-4823-bb80-bc725d280c3a",
+//         "operations": [
+//             "391b980c-a792-4343-8da6-33f9774d7d39",
+//             "40fd454c-a438-47bb-9bc5-399d1fffd562",
+// 	    ]
+//     },
+//     {
+//         "id": "0f8ea882-219d-4823-bb80-bc725d280c3a",
+//         "operations": [
+//             "9ae6d868-d5ef-44f5-8aa5-cd01cd726902",
+//         ]
+//     }
+// ]
+
+
+
 
 describe('Retrieve.js lib module', () => {
     test('retrieveConfig() for users', () => {
@@ -107,5 +145,9 @@ describe('Retrieve.js lib module', () => {
 
     test('retrieveConfig() for presets', () => {
 	    expect(retrieveConfig('./testdata', 'presets')).toEqual(presets);
+    });
+
+    test('retrieveConfig() for flows', () => {
+	    expect(retrieveConfig('./testdata', 'flows')).toEqual(flows);
     });
 });
