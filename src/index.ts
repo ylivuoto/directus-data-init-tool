@@ -74,7 +74,7 @@ inits.then(() => {
 
 // And similarly prompt further questions after init is done
 const conf = inits.then(() =>{
-    inquirer
+    return inquirer
 	.prompt(questions)
 	.then(async (answers: IPrompts) => {
 	    console.log(answers)
