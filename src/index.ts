@@ -79,7 +79,7 @@ const conf = inits.then(() =>{
 	.then(async (answers: IPrompts) => {
 	    console.log(answers)
 
-	    exec(`export DIRECTUS_URL="${answers.url}"`)
+	    exec(`export DIRECTUS_URL=${answers.url}`)
 	    
 	    client.updateURL(answers.url);
 	    client.updateToken(answers.token);
@@ -96,7 +96,7 @@ conf.then( () => {
     inquirer
 	.prompt(frontend)
 	.then(async (answers: IFrontend) => {
-	    exec(`export DIRECTUS_WEBAPI="${answers.server_token}"`)
+	    exec(`export DIRECTUS_WEBAPI=${answers.server_token}`)
 	    console.log('Server API token set to env (Linux)')
 
 	    nextjsDir = answers.nextjs_dir;
