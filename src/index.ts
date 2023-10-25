@@ -1,14 +1,14 @@
 import inquirer from 'inquirer';
 import { DClient } from './lib/directus.js';
-import { questions, initials } from './lib/constants.js';
+import { questions, initials, frontend } from './lib/constants.js';
 import { exec } from 'node:child_process'
 
 import { v4 as uuidv4 } from 'uuid';
 
 const client = new DClient();
 
-const description = 'Apply a template to a blank Directus instance.'
-console.log(description);
+console.log("Apply a template to a blank Directus instance. \n\n");
+console.log('\x1b[1;31m', 'Works properly only on Linux.\n', '\x1b[0m');
 
 interface IPrompts {
     url: string;
@@ -16,9 +16,27 @@ interface IPrompts {
     collections: Array<string>;
 }
 
+interface IFrontend {
+    server_token: string;
+    nextjs_dir: string;
+}
+
+const logError = (e :any) => {
+    // Handle error here
+    if (e.isTtyError) {
+	console.log('TTY err');
+	// Prompt couldn't be rendered in the current environment
+    } else {
+	// Something else went wrong
+	console.log('Prompter error.')
+	console.log(e);
+    }
+}
+
 const key = uuidv4();
 const secret = uuidv4();
-let directusDir = '~/ylivuoto/directus-on-docker';
+let directusDir = '/headless-site/directus-on-docker';
+let nextjsDir = '/headless-site/directus-nextjs';
 let composeFile = 'docker-compose.yml';
 
 // Prompt some initial values like secrets, collections etc.
@@ -45,14 +63,7 @@ const inits = inquirer
 	return;
     })
     .catch((error: any) => {
-	if (error.isTtyError) {
-	    console.log('TTY err');
-	    // Prompt couldn't be rendered in the current environment
-	} else {
-	    // Something else went wrong
-	    console.log('Prompter error.')
-	    console.log(error);
-	}
+	logError(error);
     });
 
 // Invoke the docker command after initial setup is done
@@ -62,24 +73,37 @@ inits.then(() => {
 });
 
 // And similarly prompt further questions after init is done
-inits.then(() =>{
-inquirer
-    .prompt(questions)
-    .then(async (answers: IPrompts) => {
-	console.log(answers)
-	client.updateURL(answers.url);
-	client.updateToken(answers.token);
-	client.updateCollections(answers.collections)
-	await client.load();
-    })
-    .catch((error: any) => {
-	if (error.isTtyError) {
-	    console.log('TTY err');
-	    // Prompt couldn't be rendered in the current environment
-	} else {
-	    // Something else went wrong
-	    console.log('Prompter error.')
-	    console.log(error);
-	}
-    });
+const conf = inits.then(() =>{
+    inquirer
+	.prompt(questions)
+	.then(async (answers: IPrompts) => {
+	    console.log(answers)
+
+	    exec(`export DIRECTUS_URL="${answers.url}"`)
+	    
+	    client.updateURL(answers.url);
+	    client.updateToken(answers.token);
+	    client.updateCollections(answers.collections)
+	    await client.load();
+	})
+	.catch((error: any) => {
+	    logError(error);
+	});
+});
+
+// Run nextjs frontend container with correct env values
+conf.then( () => {
+    inquirer
+	.prompt(frontend)
+	.then(async (answers: IFrontend) => {
+	    exec(`export DIRECTUS_WEBAPI="${answers.server_token}"`)
+	    console.log('Server API token set to env (Linux)')
+
+	    nextjsDir = answers.nextjs_dir;
+	    console.log('Starting up the frontend container...')
+	    exec(`docker stack deploy --compose-file ${nextjsDir}/${composeFile} nextjs_frontend`);
+	})
+	.catch((error: any) => {
+	    logError(error);
+	});
 });

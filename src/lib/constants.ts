@@ -1,6 +1,21 @@
 import { DClient } from './directus.js';
 const client = new DClient();
 
+export const frontend = [
+    {
+	type: 'input',
+	name: 'nextjs_dir',
+	default: '/directus-nextjs',
+	message: "Please give a NextJS root-folder:",
+    },
+    {
+	type: 'input',
+	name: 'server_token',
+	default: '-',
+	message: "Server API communication token:",
+    },
+]
+
 export const initials = [
     {
 	type: 'input',
