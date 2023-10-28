@@ -36,6 +36,10 @@ export class DClient {
 	    .catch(() => false);
     }
 
+    public getUrl(){
+	return this.url;
+    }
+
     public async load() {
 	const schema = retrieveBackup();
 

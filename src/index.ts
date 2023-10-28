@@ -2,13 +2,15 @@ import inquirer from 'inquirer';
 import { DClient } from './lib/directus.js';
 import { questions, initials, frontend } from './lib/constants.js';
 import { exec } from 'node:child_process'
+import fs from 'fs';
 
 import { v4 as uuidv4 } from 'uuid';
 
-const client = new DClient();
 
 console.log("Apply a template to a blank Directus instance. \n\n");
 console.log('\x1b[1;31m', 'Works properly only on Linux.\n', '\x1b[0m');
+
+const client = new DClient();
 
 interface IPrompts {
     url: string;
@@ -58,7 +60,6 @@ const inits = inquirer
 	exec(`printf ${secret} | docker secret create project_secret -`);
 	console.log('Secret for directus wrote.');
 	console.log('\n');
-
 	directusDir = answers.directus_dir;
 	return;
     })
@@ -73,14 +74,10 @@ inits.then(() => {
 });
 
 // And similarly prompt further questions after init is done
-const conf = inits.then(() =>{
+const conf = inits.then(async () =>{
     return inquirer
 	.prompt(questions)
 	.then(async (answers: IPrompts) => {
-	    console.log(answers)
-
-	    exec(`export DIRECTUS_URL=${answers.url}`)
-	    
 	    client.updateURL(answers.url);
 	    client.updateToken(answers.token);
 	    client.updateCollections(answers.collections)
@@ -96,9 +93,12 @@ conf.then( () => {
     inquirer
 	.prompt(frontend)
 	.then(async (answers: IFrontend) => {
-	    exec(`export DIRECTUS_WEBAPI=${answers.server_token}`)
-	    console.log('Server API token set to env (Linux)')
-
+	    const envs = `DIRECTUS_URL="${client.getUrl()}"\nDIRECTUS_WEBAPI="${answers.server_token}"`
+	    fs.writeFileSync('./.env', envs, { 
+	    encoding: "utf8", 
+	    flag: "w", 
+	});
+	    
 	    nextjsDir = answers.nextjs_dir;
 	    console.log('Starting up the frontend container...')
 	    exec(`docker stack deploy --compose-file ${nextjsDir}/${composeFile} nextjs_frontend`);
