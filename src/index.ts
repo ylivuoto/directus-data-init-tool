@@ -81,12 +81,20 @@ const conf = inits.then(async () =>{
 	    client.updateURL(answers.url);
 	    client.updateToken(answers.token);
 	    client.updateCollections(answers.collections)
-	    await client.load();
+	    const schemaFail: void | boolean = await client.load();
+
+	    if(schemaFail)
+		retrySchema();
 	})
 	.catch((error: any) => {
 	    logError(error);
 	});
 });
+
+const retrySchema = () => {
+    console.log('Implement schema error recovery!');
+}
+
 
 // Run nextjs frontend container with correct env values
 conf.then( () => {

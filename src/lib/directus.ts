@@ -45,11 +45,14 @@ export class DClient {
 
 	if(!schema){
 	    console.log('Schema not defined.')
-	    return;
+	    return true;
 	}
 
 	const getDiff = this.client.request(schemaDiff(schema, true))
-	    .catch((error) => console.log('Diff error: ', error));
+	    .catch((error) => {
+		console.log('Diff error: ', error)
+		return true;
+	    });
 
 	const apply = getDiff.then(async (diff: any) => {
 	    console.log(diff);
@@ -57,9 +60,9 @@ export class DClient {
 		    console.log('Schema diff empty.')
 		}
 
-		return this.client.request(schemaApply(diff))
-		    .catch((error) => console.log('Schema error: ', error));
-
+	    return this.client.request(schemaApply(diff))
+		.catch((error) => console.log('Schema error: ', error));
+	    
 	}).catch(() => console.log('Error when apply!'));
 
 	const writeMapping: any = {
@@ -109,5 +112,7 @@ export class DClient {
 	    }
 	    
 	}).catch((error) => console.log('Error with system collections: ', error));
+
+	return;
     }
 }
